@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Error - Sunbreeze</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #141414;
+                color: #f8f9fa;
+                padding: 20px;
+                margin: 0;
+            }
+
+            h1 {
+                color: #ff6b6b;
+            }
+
+            pre {
+                padding: 10px;
+                border-radius: 5px;
+                overflow-x: auto;
+            }
+
+            a {
+                color: #66b2ff;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+        </style>
+
+
+    </head>
+
+    <body>
+        <h1>An Error Occurred</h1>
+        <p>Something went wrong while processing the request.</p>
+
+        {% if traceback %}
+        <h2>Traceback:</h2>
+        <pre><code class="language-python">{{ traceback }}</code></pre>
+        {% endif %}
+
+        <h2>Request:</h2>
+        <p><strong>{{ request.method }}</strong> {{ request.url }}</p>
+        <h3>Request Headers:</h3>
+        <ul>
+            {% for key, value in request.headers.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+            {% endfor %}
+        </ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+    </body>
+
+</html>

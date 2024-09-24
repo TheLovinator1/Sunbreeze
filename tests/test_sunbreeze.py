@@ -10,44 +10,43 @@ from sunbreeze import METHOD_NOT_ALLOWED_MESSAGE, BaseView, Sunbreeze
 if TYPE_CHECKING:
     from httpx import Response
 
+app = Sunbreeze()
 
+
+@app.view("/", methods=["GET"])
 class SimpleView(BaseView):
     """A simple test view to validate HTTP method handling."""
 
     async def get(self, request: Request) -> PlainTextResponse:
         return PlainTextResponse(content="GET response")
 
+
+@app.view("/post", methods=["POST"])
+class PostView(BaseView):
+    """A simple test view to validate HTTP method handling."""
+
     async def post(self, request: Request) -> PlainTextResponse:
         return PlainTextResponse(content="POST response")
 
 
 def test_baseview_get() -> None:
-    sunbreeze = Sunbreeze()
-    sunbreeze.add_route(path="/", route=SimpleView())
-
-    client = TestClient(app=sunbreeze.app)
-    response = client.get("/")
+    client = TestClient(app=app.app)
+    response: Response = client.get("/")
     assert response.status_code == 200
     assert response.text == "GET response"
 
 
 def test_baseview_post() -> None:
     """Test that the POST method dispatches correctly."""
-    sunbreeze = Sunbreeze()
-    sunbreeze.add_route(path="/", route=SimpleView())
-
-    client = TestClient(app=sunbreeze.app)
-    response: Response = client.post("/")
+    client = TestClient(app=app.app)
+    response: Response = client.post("/post")
     assert response.status_code == 200
     assert response.text == "POST response"
 
 
 def test_baseview_method_not_allowed() -> None:
     """Test that an unsupported method returns 405."""
-    sunbreeze = Sunbreeze()
-    sunbreeze.add_route(path="/", route=SimpleView())
-
-    client = TestClient(app=sunbreeze.app)
+    client = TestClient(app=app.app)
     response: Response = client.put("/")
     assert response.status_code == 405
     assert response.text == METHOD_NOT_ALLOWED_MESSAGE
